@@ -124,9 +124,9 @@ void init_bme68x()
 //     return 0;
 // }
 
-int main()
+const char * get_bme_reading()
 {
-   struct bme68x_dev bme;
+    struct bme68x_dev bme;
     int8_t rslt;
     struct bme68x_conf conf;
     struct bme68x_heatr_conf heatr_conf;
@@ -178,8 +178,8 @@ int main()
     bme68x_check_rslt("bme68x_set_op_mode", rslt);
 
     /* Check if rslt == BME68X_OK, report or handle if otherwise */
-    printf(
-        "Sample, TimeStamp(ms), Temperature(deg C), Pressure(Pa), Humidity(%%), Gas resistance(ohm), Status, Profile index, Measurement index\n");
+    // printf(
+    //     "Sample, TimeStamp(ms), Temperature(deg C), Pressure(Pa), Humidity(%%), Gas resistance(ohm), Status, Profile index, Measurement index\n");
     while (sample_count <= SAMPLE_COUNT)
     {
         /* Calculate delay period in microseconds */
@@ -195,16 +195,16 @@ int main()
         for (uint8_t i = 0; i < n_fields; i++)
         {
 #ifdef BME68X_USE_FPU
-            printf("%u, %lu, %.2f, %.2f, %.2f, %.2f, 0x%x, %d, %d\n",
-                   sample_count,
-                   (long unsigned int)time_ms + (i * (del_period / 2000)),
-                   data[i].temperature,
-                   data[i].pressure,
-                   data[i].humidity,
-                   data[i].gas_resistance,
-                   data[i].status,
-                   data[i].gas_index,
-                   data[i].meas_index);
+            // printf("%u, %lu, %.2f, %.2f, %.2f, %.2f, 0x%x, %d, %d\n",
+            //        sample_count,
+            //        (long unsigned int)time_ms + (i * (del_period / 2000)),
+            //        data[i].temperature,
+            //        data[i].pressure,
+            //        data[i].humidity,
+            //        data[i].gas_resistance,
+            //        data[i].status,
+            //        data[i].gas_index,
+            //        data[i].meas_index);
 #else
             printf("%u, %lu, %d, %lu, %lu, %lu, 0x%x, %d, %d\n",
                    sample_count,
@@ -221,6 +221,9 @@ int main()
         }
     }
 
+    char *c = malloc(100);
+    snprintf(c, 100, "{\"temperature\": %.2f, \"pressure\": %.2f, \"humidity\": %.2f, \"gas_resistance\": %.2f}", data[0].temperature, data[0].pressure, data[0].humidity, data[0].gas_resistance);
+    return c;
 
     return 0;
 }

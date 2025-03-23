@@ -157,7 +157,7 @@ int8_t bme68x_init(struct bme68x_dev *dev)
     // printf("varient id: 0x%x\n\n", doot);
 
     rslt = bme68x_get_regs(BME68X_REG_CHIP_ID, &dev->chip_id, 1, dev);
-    printf("Chip ID: 0x%x\n\n", dev->chip_id);
+    // printf("Chip ID: 0x%x\n\n", dev->chip_id);
     if (rslt == BME68X_OK)
     {
         if (dev->chip_id == BME68X_CHIP_ID)
