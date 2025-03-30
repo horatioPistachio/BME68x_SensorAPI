@@ -152,7 +152,7 @@ int8_t bme68x_interface_init(struct bme68x_dev *bme, uint8_t intf)
         /* Bus configuration : I2C */
         if (intf == BME68X_I2C_INTF)
         {
-            printf("I2C Interface\n");
+            // printf("I2C Interface\n");
             dev_addr = BME68X_I2C_ADDR_LOW;
             bme->read = bme68x_i2c_read;
             bme->write = bme68x_i2c_write;
