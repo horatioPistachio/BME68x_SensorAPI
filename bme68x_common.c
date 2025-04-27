@@ -60,13 +60,16 @@ BME68X_INTF_RET_TYPE bme68x_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32
     if (file < 0)
     {
         printf("Failed to open the i2c bus\n");
-        exit(1);
+        // exit(1);
+        return -1;
+
     }
 
     if (ioctl(file, I2C_SLAVE, device_addr) < 0)
     {
         printf("Failed to set the i2c address\n");
-        exit(1);
+        // exit(1);
+        return -2;
     }
 
 
@@ -74,7 +77,8 @@ BME68X_INTF_RET_TYPE bme68x_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32
     if (write(file, &reg_addr, 1) != 1)
     {
         printf("Failed to write to the i2c bus\n");
-        exit(1);
+        // exit(1);
+        return -3;
     }
 
     char *buf = malloc(len);
@@ -82,7 +86,9 @@ BME68X_INTF_RET_TYPE bme68x_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32
     if ( read(file, buf, len) != len)
     {
         printf("Failed to read from the i2c bus\n");
-        exit(1);
+        // exit(1);
+        free(buf);
+        return -4;
     }
     else {
         // printf("Read: 0x%x from reg: 0x%x on dev:%x\n", buf[0], reg_addr, device_addr);
@@ -107,12 +113,14 @@ BME68X_INTF_RET_TYPE bme68x_i2c_write(uint8_t reg_addr, const uint8_t *reg_data,
     if (file < 0)
     {
         printf("Failed to open the i2c bus\n");
-        exit(1);
+        // exit(1);
+        return -1;
     }
     if (ioctl(file, I2C_SLAVE, device_addr) < 0)
     {
         printf("Failed to set the i2c address\n");
-        exit(1);
+        // exit(1);
+        return -2;
     }
     char *buf = malloc(len + 1);
     memcpy(buf, &reg_addr, 1);
@@ -122,11 +130,13 @@ BME68X_INTF_RET_TYPE bme68x_i2c_write(uint8_t reg_addr, const uint8_t *reg_data,
     if (write(file, buf, len + 1) != len + 1)
     {
         printf("Failed to write to the i2c bus\n");
-        exit(1);
+        // exit(1);
+        free(buf);
+        return -3;
     }
 
     // printf("Wrote: 0x%x to 0x%x\n", reg_data[0], reg_addr);
-
+    free(buf);
     return 0;
 }
 

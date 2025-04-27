@@ -135,6 +135,7 @@ const char * get_bme_reading()
     uint32_t time_ms = 0;
     uint8_t n_fields;
     uint16_t sample_count = 1;
+    char *c = malloc(100);
 
     /* Heater temperature in degree Celsius */
     uint16_t temp_prof[10] = { 200, 240, 280, 320, 360, 360, 320, 280, 240, 200 };
@@ -148,13 +149,28 @@ const char * get_bme_reading()
      */
     rslt = bme68x_interface_init(&bme, BME68X_I2C_INTF);
     bme68x_check_rslt("bme68x_interface_init", rslt);
+    if (rslt != BME68X_OK)
+    {
+        snprintf(c, 100, "Error: %d\n", rslt);
+        return c;
+    }
 
     rslt = bme68x_init(&bme);
     bme68x_check_rslt("bme68x_init", rslt);
+    if (rslt != BME68X_OK)
+    {
+        snprintf(c, 100, "Error: %d\n", rslt);
+        return c;
+    }
 
     /* Check if rslt == BME68X_OK, report or handle if otherwise */
     rslt = bme68x_get_conf(&conf, &bme);
     bme68x_check_rslt("bme68x_get_conf", rslt);
+    if (rslt != BME68X_OK)
+    {
+        snprintf(c, 100, "Error: %d\n", rslt);
+        return c;
+    }
 
     /* Check if rslt == BME68X_OK, report or handle if otherwise */
     conf.filter = BME68X_FILTER_OFF;
@@ -164,6 +180,11 @@ const char * get_bme_reading()
     conf.os_temp = BME68X_OS_2X;
     rslt = bme68x_set_conf(&conf, &bme);
     bme68x_check_rslt("bme68x_set_conf", rslt);
+    if (rslt != BME68X_OK)
+    {
+        snprintf(c, 100, "Error: %d\n", rslt);
+        return c;
+    }
 
     /* Check if rslt == BME68X_OK, report or handle if otherwise */
     heatr_conf.enable = BME68X_ENABLE;
@@ -172,10 +193,20 @@ const char * get_bme_reading()
     heatr_conf.profile_len = 10;
     rslt = bme68x_set_heatr_conf(BME68X_SEQUENTIAL_MODE, &heatr_conf, &bme);
     bme68x_check_rslt("bme68x_set_heatr_conf", rslt);
+    if (rslt != BME68X_OK)
+    {
+        snprintf(c, 100, "Error: %d\n", rslt);
+        return c;
+    }
 
     /* Check if rslt == BME68X_OK, report or handle if otherwise */
     rslt = bme68x_set_op_mode(BME68X_SEQUENTIAL_MODE, &bme);
     bme68x_check_rslt("bme68x_set_op_mode", rslt);
+    if (rslt != BME68X_OK)
+    {
+        snprintf(c, 100, "Error: %d\n", rslt);
+        return c;
+    }
 
     /* Check if rslt == BME68X_OK, report or handle if otherwise */
     // printf(
@@ -221,7 +252,7 @@ const char * get_bme_reading()
         }
     }
 
-    char *c = malloc(100);
+    
     snprintf(c, 100, "{\"temperature\": %.2f, \"pressure\": %.2f, \"humidity\": %.2f, \"gas_resistance\": %.2f}", data[0].temperature, data[0].pressure, data[0].humidity, data[0].gas_resistance);
     return c;
 
