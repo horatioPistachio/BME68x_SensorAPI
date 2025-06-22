@@ -61,7 +61,7 @@ BME68X_INTF_RET_TYPE bme68x_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32
     {
         printf("Failed to open the i2c bus\n");
         // exit(1);
-        close(I2C_PORT);
+        close(file);
         return -1;
 
     }
@@ -70,7 +70,7 @@ BME68X_INTF_RET_TYPE bme68x_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32
     {
         printf("Failed to set the i2c address\n");
         // exit(1);
-        close(I2C_PORT);
+        close(file);
         return -2;
     }
 
@@ -79,7 +79,7 @@ BME68X_INTF_RET_TYPE bme68x_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32
     if (write(file, &reg_addr, 1) != 1)
     {
         printf("Failed to write to the i2c bus\n");
-        close(I2C_PORT);
+        close(file);
         // exit(1);
         return -3;
     }
@@ -91,7 +91,7 @@ BME68X_INTF_RET_TYPE bme68x_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32
         printf("Failed to read from the i2c bus\n");
         // exit(1);
         free(buf);
-        close(I2C_PORT);
+        close(file);
         return -4;
     }
     else {
@@ -100,7 +100,7 @@ BME68X_INTF_RET_TYPE bme68x_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32
     }
 
     free(buf);
-    close(I2C_PORT);
+    close(file);
 
     return 0;
 }
@@ -119,14 +119,14 @@ BME68X_INTF_RET_TYPE bme68x_i2c_write(uint8_t reg_addr, const uint8_t *reg_data,
     {
         printf("Failed to open the i2c bus\n");
         // exit(1);
-        close(I2C_PORT);
+        close(file);
         return -1;
     }
     if (ioctl(file, I2C_SLAVE, device_addr) < 0)
     {
         printf("Failed to set the i2c address\n");
         // exit(1);
-        close(I2C_PORT);
+        close(file);
         return -2;
     }
     char *buf = malloc(len + 1);
@@ -139,13 +139,13 @@ BME68X_INTF_RET_TYPE bme68x_i2c_write(uint8_t reg_addr, const uint8_t *reg_data,
         printf("Failed to write to the i2c bus\n");
         // exit(1);
         free(buf);
-        close(I2C_PORT);
+        close(file);
         return -3;
     }
 
     // printf("Wrote: 0x%x to 0x%x\n", reg_data[0], reg_addr);
     free(buf);
-    close(I2C_PORT);
+    close(file);
     return 0;
 }
 
